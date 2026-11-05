@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salud Preventiva</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Hoja de estilos personalizada -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- BARRA DE NAVEGACIÓN SUPERIOR -->
+    <header id="main-header" class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm hidden">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateToDashboard()">
+                <div class="bg-sky-500 text-white p-2 rounded-xl shadow-md shadow-sky-200">
+                    <i data-lucide="activity" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <span class="font-extrabold text-slate-800 text-lg leading-none block">SALUD</span>
+                    <span class="text-xs font-semibold text-sky-600 tracking-wider">PREVENTIVA</span>
+                </div>
+            </div>
+
+            <!-- Navegación principal -->
+            <nav class="hidden md:flex items-center space-x-1 font-medium text-sm text-slate-600">
+                <button onclick="navigateToDashboard()" class="px-3 py-2 rounded-lg hover:bg-slate-100 transition">Panel</button>
+                <button onclick="navigateTo('view-agenda')" class="px-3 py-2 rounded-lg hover:bg-slate-100 transition">Agenda</button>
+                <button onclick="navigateTo('view-teleconsulta')" class="px-3 py-2 rounded-lg hover:bg-slate-100 transition">Teleconsulta</button>
+                <button onclick="navigateTo('view-resultados')" class="px-3 py-2 rounded-lg hover:bg-slate-100 transition">Resultados</button>
+                <button onclick="navigateTo('view-historia')" class="px-3 py-2 rounded-lg hover:bg-slate-100 transition">Historia Clínica</button>
+            </nav>
+
+            <!-- Acciones de perfil / notificaciones -->
+            <div class="flex items-center space-x-2">
+                <button onclick="navigateTo('view-notifications')" class="p-2 text-slate-600 hover:bg-slate-100 rounded-full relative">
+                    <i data-lucide="bell" class="w-5 h-5"></i>
+                    <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                </button>
+                <button onclick="navigateTo('view-settings')" class="p-2 text-slate-600 hover:bg-slate-100 rounded-full">
+                    <i data-lucide="settings" class="w-5 h-5"></i>
+                </button>
+                <button onclick="navigateTo('view-help')" class="p-2 text-slate-600 hover:bg-slate-100 rounded-full">
+                    <i data-lucide="help-circle" class="w-5 h-5"></i>
+                </button>
+
+                <div class="h-6 w-px bg-slate-200 mx-1"></div>
+
+                <!-- Menú rápido de Rol -->
+                <button onclick="toggleRole()" id="role-toggle-btn" class="flex items-center space-x-2 bg-sky-50 text-sky-700 px-3 py-1.5 rounded-full border border-sky-200 hover:bg-sky-100 transition text-xs font-semibold">
+                    <i data-lucide="user" class="w-4 h-4"></i>
+                    <span id="role-label">Paciente: María</span>
+                </button>
+                
+                <button onclick="navigateTo('view-login')" class="p-2 text-slate-400 hover:text-red-500 rounded-full" title="Cerrar sesión">
+                    <i data-lucide="log-out" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL DE VISTAS -->
+    <main class="flex-grow flex flex-col justify-center max-w-6xl w-full mx-auto p-4 md:p-6">
+
+        <!-- 1. PANTALLA INICIO DE SESIÓN CON SELECCIÓN LIMPIA DE ROL -->
+        <section id="view-login" class="view-section active w-full max-w-4xl mx-auto">
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 grid md:grid-cols-2 min-h-[500px]">
+                
+                <!-- Ilustración lateral -->
+                <div class="login-bg-container p-8 flex flex-col justify-between hidden md:flex border-r border-slate-100 relative">
+                    <div class="shape-top-left"></div>
+                    <div class="shape-bottom-right"></div>
+                    
+                    <div class="cross-deco top-12 right-12"><i data-lucide="plus" class="w-8 h-8 opacity-60"></i></div>
+                    <div class="cross-deco top-20 right-28"><i data-lucide="plus" class="w-6 h-6 opacity-40"></i></div>
+                    <div class="cross-deco top-28 right-16"><i data-lucide="plus" class="w-5 h-5 opacity-50"></i></div>
+
+                    <div class="relative z-10 mt-6">
+                        <div class="text-slate-700 mb-2">
+                            <i data-lucide="activity" class="w-7 h-7 text-slate-700"></i>
+                        </div>
+                        <h1 class="text-3xl font-black text-slate-800 tracking-tight leading-tight">
+                            SALUD<br>PREVENTIVA<span class="text-xs align-top font-bold text-slate-600">+</span>
+                        </h1>
+                        <p class="text-slate-600 font-medium text-sm mt-3 max-w-xs">
+                            Cuidamos hoy, el futuro de tu comunidad
+                        </p>
+                    </div>
+
+                    <div class="relative z-10 self-end mr-6 mb-4">
+                        <div class="w-20 h-20 rounded-full border-4 border-slate-700 flex items-center justify-center bg-white/30 backdrop-blur-sm shadow-sm relative">
+                            <i data-lucide="heart" class="w-10 h-10 text-slate-800"></i>
+                            <div class="absolute bottom-2 right-2 bg-slate-800 text-white rounded-full p-0.5">
+                                <i data-lucide="plus" class="w-3 h-3"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-8 md:p-12 flex flex-col justify-center">
+                    <div class="mb-6">
+                        <span class="text-xs font-bold uppercase tracking-wider text-sky-600">Salud Preventiva</span>
+                        <h2 class="text-2xl font-bold text-slate-800 mt-1">Tu salud más cerca de ti</h2>
+                        <p class="text-slate-500 text-sm mt-1">Atención médica virtual</p>
+                    </div>
+
+                    <form onsubmit="handleLogin(event)" class="space-y-4">
+                        <!-- Selección limpia de Tipo de Usuario / Rol (sin datos prediligenciados/registros) -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Ingresar como</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label id="role-patient-card" class="role-select-card active flex items-center justify-center space-x-2 p-3 rounded-xl border border-sky-500 bg-sky-50 cursor-pointer transition">
+                                    <input type="radio" name="loginRole" value="paciente" checked onchange="selectLoginRole('paciente')" class="hidden">
+                                    <div class="p-1.5 rounded-lg bg-sky-500 text-white">
+                                        <i data-lucide="user" class="w-4 h-4"></i>
+                                    </div>
+                                    <span class="text-xs font-bold text-slate-800">Paciente</span>
+                                </label>
+
+                                <label id="role-doctor-card" class="role-select-card flex items-center justify-center space-x-2 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer transition">
+                                    <input type="radio" name="loginRole" value="medico" onchange="selectLoginRole('medico')" class="hidden">
+                                    <div class="p-1.5 rounded-lg bg-slate-300 text-slate-700">
+                                        <i data-lucide="stethoscope" class="w-4 h-4"></i>
+                                    </div>
+                                    <span class="text-xs font-bold text-slate-800">Médico</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Correo electrónico</label>
+                            <input type="email" id="login-email" required placeholder="tu@correo.com" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent text-sm bg-slate-50/50">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Contraseña</label>
+                            <input type="password" required placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent text-sm bg-slate-50/50">
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs">
+                            <button type="button" onclick="navigateTo('view-forgot-password')" class="text-sky-600 font-semibold hover:underline">¿Olvidaste tu contraseña?</button>
+                        </div>
+
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-blue-200 transition duration-200 text-sm">
+                            Ingresar
+                        </button>
+                    </form>
+
+                    <div class="mt-8 pt-6 border-t border-slate-100 text-center text-xs text-slate-500">
+                        ¿No tienes cuenta? 
+                        <button onclick="navigateTo('view-register')" class="text-sky-600 font-bold hover:underline ml-1">Regístrate</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 2. REGISTRO DE PACIENTE -->
+        <section id="view-register" class="view-section max-w-md mx-auto w-full">
+            <div class="bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
+                <div class="text-center mb-6">
+                    <span class="text-xs font-bold uppercase tracking-wider text-sky-600">Salud Preventiva</span>
+                    <h2 class="text-2xl font-bold text-slate-800 mt-1">Crea tu cuenta</h2>
+                    <p class="text-slate-500 text-xs mt-1">Regístrate para acceder a tus servicios de salud.</p>
+                </div>
+
+                <form onsubmit="event.preventDefault(); navigateTo('view-patient-dashboard');" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nombre completo</label>
+                        <input type="text" placeholder="Ingresa tu nombre completo" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Correo electrónico</label>
+                        <input type="email" placeholder="Ingresa tu correo electrónico" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Número de identificación</label>
+                        <input type="text" placeholder="Ingresa tu número de identificación" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Teléfono</label>
+                        <input type="tel" placeholder="Ingresa tu número de teléfono" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                    </div>
+
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-200 text-sm mt-4">
+                        Crear cuenta
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center text-xs text-slate-500">
+                    ¿Ya tienes una cuenta? 
+                    <button onclick="navigateTo('view-login')" class="text-sky-600 font-bold hover:underline ml-1">Inicia sesión</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. RECUPERAR CONTRASEÑA -->
+        <section id="view-forgot-password" class="view-section max-w-md mx-auto w-full">
+            <div class="bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
+                <div class="text-center mb-6">
+                    <div class="w-12 h-12 bg-sky-100 text-sky-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                        <i data-lucide="key-round" class="w-6 h-6"></i>
+                    </div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-sky-600">Salud Preventiva</span>
+                    <h2 class="text-2xl font-bold text-slate-800 mt-1">Recuperar contraseña</h2>
+                    <p class="text-slate-500 text-xs mt-2">Ingresa tu correo electrónico y te indicaremos cómo recuperar el acceso a tu cuenta.</p>
+                </div>
+
+                <form onsubmit="event.preventDefault(); navigateTo('view-forgot-confirm');" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Correo electrónico</label>
+                        <input type="email" placeholder="Ingresa tu correo" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                    </div>
+
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-200 text-sm">
+                        Enviar instrucciones
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center text-xs text-slate-500">
+                    ¿Recordaste tu contraseña? 
+                    <button onclick="navigateTo('view-login')" class="text-sky-600 font-bold hover:underline ml-1">Iniciar sesión</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. CONFIRMACIÓN DE RECUPERACIÓN DE CONTRASEÑA -->
+        <section id="view-forgot-confirm" class="view-section max-w-md mx-auto w-full text-center">
+            <div class="bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
+                <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="check-circle-2" class="w-10 h-10"></i>
+                </div>
+                <span class="text-xs font-bold uppercase tracking-wider text-sky-600">Salud Preventiva</span>
+                <h2 class="text-2xl font-bold text-slate-800 mt-1">¡Revisa tu correo!</h2>
+                <p class="text-slate-600 text-sm my-4 italic">
+                    "Si el correo está registrado, recibirás instrucciones para recuperar tu contraseña."
+                </p>
+
+                <button onclick="navigateTo('view-login')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-full shadow-lg shadow-blue-200 text-sm mb-4">
+                    Volver al inicio de sesión
+                </button>
+
+                <button onclick="navigateTo('view-help')" class="text-xs text-slate-500 hover:text-sky-600 font-medium">¿Necesitas ayuda?</button>
+            </div>
+        </section>
+
+        <!-- 5. PANEL DEL PACIENTE (MARÍA) -->
+        <section id="view-patient-dashboard" class="view-section">
+            <div class="mb-8">
+                <div class="flex items-center space-x-2 text-xs font-bold text-sky-600 uppercase tracking-wider">
+                    <span>Salud Preventiva</span>
+                    <span>•</span>
+                    <span>Panel de paciente</span>
+                </div>
+                <h1 class="text-3xl font-extrabold text-slate-800 mt-1">¡Hola, María!</h1>
+                <p class="text-slate-500 text-sm">Tu salud es nuestra prioridad.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div onclick="navigateTo('view-book-appointment')" class="bg-white p-6 rounded-3xl border border-slate-100 shadow-md hover:shadow-xl transition cursor-pointer group flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 bg-sky-100 text-sky-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                            <i data-lucide="calendar-plus" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg">Agendar cita</h3>
+                        <p class="text-slate-500 text-xs mt-1">Solicita una consulta médica.</p>
+                    </div>
+                    <div class="mt-6 flex items-center text-xs font-bold text-sky-600">
+                        <span>Agendar</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4 ml-1 group-hover:translate-x-1 transition"></i>
+                    </div>
+                </div>
+
+                <div onclick="navigateTo('view-teleconsulta')" class="bg-white p-6 rounded-3xl border border-slate-100 shadow-md hover:shadow-xl transition cursor-pointer group flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                            <i data-lucide="video" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg">Teleconsulta</h3>
+                        <p class="text-slate-500 text-xs mt-1">Consulta con tu médico en línea.</p>
+                    </div>
+                    <div class="mt-6 flex items-center text-xs font-bold text-blue-600">
+                        <span>Ingresar</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4 ml-1 group-hover:translate-x-1 transition"></i>
+                    </div>
+                </div>
+
+                <div onclick="navigateTo('view-resultados')" class="bg-white p-6 rounded-3xl border border-slate-100 shadow-md hover:shadow-xl transition cursor-pointer group flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                            <i data-lucide="file-text" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg">Resultados</h3>
+                        <p class="text-slate-500 text-xs mt-1">Revisa tus exámenes médicos.</p>
+                    </div>
+                    <div class="mt-6 flex items-center text-xs font-bold text-emerald-600">
+                        <span>Ver examen</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4 ml-1 group-hover:translate-x-1 transition"></i>
+                    </div>
+                </div>
+
+                <div onclick="navigateTo('view-historia')" class="bg-white p-6 rounded-3xl border border-slate-100 shadow-md hover:shadow-xl transition cursor-pointer group flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                            <i data-lucide="folder-heart" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg">Historia clínica</h3>
+                        <p class="text-slate-500 text-xs mt-1">Consulta tu información médica.</p>
+                    </div>
+                    <div class="mt-6 flex items-center text-xs font-bold text-purple-600">
+                        <span>Consultar</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4 ml-1 group-hover:translate-x-1 transition"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. PANEL DEL MÉDICO (DR. CARLOS) -->
+        <section id="view-doctor-dashboard" class="view-section">
+            <div class="mb-8">
+                <div class="flex items-center space-x-2 text-xs font-bold text-sky-600 uppercase tracking-wider">
+                    <span>Salud Preventiva</span>
+                    <span>•</span>
+                    <span>Panel del médico</span>
+                </div>
+                <h1 class="text-3xl font-extrabold text-slate-800 mt-1">¡Hola, Dr. Carlos!</h1>
+                <p class="text-slate-500 text-sm">Gestiona tus pacientes y consultas.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div onclick="navigateTo('view-agenda')" class="bg-white p-6 rounded-3xl border border-slate-100 shadow-md hover:shadow-xl transition cursor-pointer flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-sky-100 text-sky-600 rounded-2xl flex items-center justify-center">
+                                <i data-lucide="calendar" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-3xl font-extrabold text-sky-600">8</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg">Citas pendientes</h3>
+                        <p class="text-slate-500 text-xs mt-1">Consulta tu agenda médica.</p>
+                    </div>
+                </div>
+
+                <div onclick="navigateTo('view-patient-profile')" class="bg-white p-6 rounded-3xl border border-slate-100 shadow-md hover:shadow-xl transition cursor-pointer flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-4">
+                            <i data-lucide="users" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg">Mis pacientes</h3>
+                        <p class="text-slate-500 text-xs mt-1">Busca y revisa a tus pacientes.</p>
+                    </div>
+                </div>
+
+                <div onclick="navigateTo('view-teleconsulta')" class="bg-white p-6 rounded-3xl border border-slate-100 shadow-md hover:shadow-xl transition cursor-pointer flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-4">
+                            <i data-lucide="video" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg">Teleconsultas</h3>
+                        <p class="text-slate-500 text-xs mt-1">Atiende consultas virtuales.</p>
+                    </div>
+                </div>
+
+                <div onclick="navigateTo('view-historia')" class="bg-white p-6 rounded-3xl border border-slate-100 shadow-md hover:shadow-xl transition cursor-pointer flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center mb-4">
+                            <i data-lucide="clipboard-list" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg">Historias clínicas</h3>
+                        <p class="text-slate-500 text-xs mt-1">Consulta la información médica.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. AGENDA MÉDICA -->
+        <section id="view-agenda" class="view-section">
+            <div class="mb-6">
+                <span class="text-xs font-bold uppercase tracking-wider text-sky-600">Salud Preventiva</span>
+                <h2 class="text-2xl font-bold text-slate-800 mt-1">Agenda de citas</h2>
+                <p class="text-slate-500 text-sm">Consulta las citas programadas para tus pacientes.</p>
+            </div>
+
+            <div class="bg-white rounded-3xl shadow-md border border-slate-100 overflow-hidden divide-y divide-slate-100">
+                <div class="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-slate-50 transition">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 rounded-full bg-sky-100 text-sky-600 font-bold flex items-center justify-center text-sm">MR</div>
+                        <div>
+                            <h4 class="font-bold text-slate-800">María Rodríguez</h4>
+                            <p class="text-xs text-slate-500">20 de octubre - 9:00 a.m.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-sky-50 text-sky-700 text-xs font-semibold rounded-full border border-sky-200">
+                        Consulta general
+                    </span>
+                </div>
+
+                <div class="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-slate-50 transition">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 font-bold flex items-center justify-center text-sm">CM</div>
+                        <div>
+                            <h4 class="font-bold text-slate-800">Carlos Martínez</h4>
+                            <p class="text-xs text-slate-500">20 de octubre - 10:30 a.m.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full border border-emerald-200">
+                        Control preventivo
+                    </span>
+                </div>
+
+                <div class="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-slate-50 transition">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-600 font-bold flex items-center justify-center text-sm">LG</div>
+                        <div>
+                            <h4 class="font-bold text-slate-800">Laura Gómez</h4>
+                            <p class="text-xs text-slate-500">20 de octubre - 11:30 a.m.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-purple-50 text-purple-700 text-xs font-semibold rounded-full border border-purple-200">
+                        Teleconsulta
+                    </span>
+                </div>
+
+                <div class="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-slate-50 transition">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-600 font-bold flex items-center justify-center text-sm">AP</div>
+                        <div>
+                            <h4 class="font-bold text-slate-800">Andrés Pérez</h4>
+                            <p class="text-xs text-slate-500">20 de octubre - 2:00 p.m.</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-amber-50 text-amber-700 text-xs font-semibold rounded-full border border-amber-200">
+                        Seguimiento médico
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. TELECONSULTA MÉDICA -->
+        <section id="view-teleconsulta" class="view-section max-w-2xl mx-auto w-full">
+            <div class="bg-white rounded-3xl shadow-xl p-8 border border-slate-100 text-center">
+                <span class="text-xs font-bold uppercase tracking-wider text-sky-600">Salud Preventiva</span>
+                <h2 class="text-2xl font-bold text-slate-800 mt-1">Teleconsulta médica</h2>
+                <p class="text-slate-500 text-xs mt-1 mb-6">Conéctate con tu médico sin desplazarte.</p>
+
+                <div class="bg-slate-900 rounded-2xl p-8 text-white relative overflow-hidden mb-6 min-h-[220px] flex flex-col items-center justify-center">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80"></div>
+                    
+                    <div class="relative z-10 flex flex-col items-center">
+                        <div class="w-20 h-20 rounded-full bg-slate-700 border-2 border-sky-400 flex items-center justify-center mb-3 text-sky-300">
+                            <i data-lucide="user-check" class="w-10 h-10"></i>
+                        </div>
+                        <h3 class="text-lg font-bold">Dr. Carlos Ramírez</h3>
+                        <p class="text-xs text-sky-300">Medicina General disponible para consulta</p>
+                    </div>
+                </div>
+
+                <button onclick="alert('Iniciando sala virtual de atención médica...')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-200 text-sm flex items-center justify-center space-x-2">
+                    <i data-lucide="video" class="w-5 h-5"></i>
+                    <span>Iniciar consulta</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- 9. RESULTADOS MÉDICOS -->
+        <section id="view-resultados" class="view-section">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-sky-600">Salud Preventiva</span>
+                    <h2 class="text-2xl font-bold text-slate-800 mt-1">Mis resultados</h2>
+                    <p class="text-slate-500 text-sm">Consulta y revisa los resultados de tus exámenes médicos.</p>
+                </div>
+                <button onclick="alert('Función de carga de PDF activada.')" class="bg-sky-50 text-sky-700 border border-sky-200 font-bold px-4 py-2.5 rounded-xl text-xs hover:bg-sky-100 transition flex items-center justify-center space-x-2">
+                    <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+                    <span>+ Subir nuevo resultado</span>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-md flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center mb-4">
+                            <i data-lucide="file-text" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800">Análisis de sangre</h3>
+                        <p class="text-xs text-slate-400 mt-1">Fecha: 18 de octubre de 2026</p>
+                    </div>
+                    <button onclick="alert('Descargando PDF de Análisis de sangre...')" class="mt-6 text-xs font-bold text-sky-600 hover:text-sky-800 flex items-center">
+                        <span>Ver resultado PDF</span>
+                        <i data-lucide="download" class="w-4 h-4 ml-1"></i>
+                    </button>
+                </div>
+
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-md flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center mb-4">
+                            <i data-lucide="activity" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800">Perfil lipídico</h3>
+                        <p class="text-xs text-slate-400 mt-1">Fecha: 12 de octubre de 2026</p>
+                    </div>
+                    <button onclick="alert('Descargando PDF de Perfil lipídico...')" class="mt-6 text-xs font-bold text-sky-600 hover:text-sky-800 flex items-center">
+                        <span>Ver resultado PDF</span>
+                        <i data-lucide="download" class="w-4 h-4 ml-1"></i>
+                    </button>
+                </div>
+
+                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-md flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-4">
+                            <i data-lucide="droplet" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800">Examen de glucosa</h3>
+                        <p class="text-xs text-slate-400 mt-1">Fecha: 15 de octubre de 2026</p>
+                    </div>
+                    <button onclick="alert('Descargando PDF de Examen de glucosa...')" class="mt-6 text-xs font-bold text-sky-600 hover:text-sky-800 flex items-center">
+                        <span>Ver resultado PDF</span>
+                        <i data-lucide="download" class="w-4 h-4 ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10. HISTORIA CLÍNICA -->
+        <section id="view-historia" class="view-section">
+            <div class="mb-6">
+                <span class="text-xs font-bold uppercase tracking-wider text-sky-600">Salud Preventiva</span>
+                <h2 class="text-2xl font-bold text-slate-800 mt-1">Mi historia clínica</h2>
+                <p class="text-slate-500 text-sm">Consulta tu información médica y tus antecedentes de salud.</p>
+            </div>
+
+            <div class="bg-white rounded-3xl shadow-md border border-slate-100 p-6 md:p-8 space-y-6">
+                <div class="border-b border-slate-100 pb-4">
+                    <h3 class="font-bold text-slate-800 text-base mb-3 flex items-center">
+                        <i data-lucide="user" class="w-4 h-4 text-sky-600 mr-2"></i> Datos del paciente
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                        <div class="bg-slate-50 p-3 rounded-xl"><span class="text-slate-400 block">Nombre</span><span class="font-semibold text-slate-700">María Rodríguez</span></div>
+                        <div class="bg-slate-50 p-3 rounded-xl"><span class="text-slate-400 block">Fecha de nacimiento</span><span class="font-semibold text-slate-700">12/05/1995</span></div>
+                        <div class="bg-slate-50 p-3 rounded-xl"><span class="text-slate-400 block">Tipo de sangre</span><span class="font-semibold text-slate-700">O+</span></div>
+                    </div>
+                </div>
+
+                <div class="border-b border-slate-100 pb-4">
+                    <h3 class="font-bold text-slate-800 text-base mb-3 flex items-center">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600 mr-2"></i> Vacunas
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                        <div class="bg-slate-50 p-3 rounded-xl"><span class="text-slate-400 block">Vacuna COVID-19</span><span class="font-semibold text-emerald-600">Registrada</span></div>
+                        <div class="bg-slate-50 p-3 rounded-xl"><span class="text-slate-400 block">Tétanos</span><span class="font-semibold text-amber-600">Pendiente de verificar</span></div>
+                        <div class="bg-slate-50 p-3 rounded-xl"><span class="text-slate-400 block">Próximo control</span><span class="font-semibold text-slate-700">Por programar</span></div>
+                    </div>
+                </div>
+
+                <div class="border-b border-slate-100 pb-4">
+                    <h3 class="font-bold text-slate-800 text-base mb-3 flex items-center">
+                        <i data-lucide="file-heart" class="w-4 h-4 text-purple-600 mr-2"></i> Antecedentes médicos
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                        <div class="bg-slate-50 p-3 rounded-xl"><span class="text-slate-400 block">Alergias</span><span class="font-semibold text-slate-700">No registradas</span></div>
+                        <div class="bg-slate-50 p-3 rounded-xl"><span class="text-slate-400 block">Enfermedades previas</span><span class="font-semibold text-slate-700">Ninguna registrada</span></div>
+                        <div class="bg-slate-50 p-3 rounded-xl"><span class="text-slate-400 block">Medicamentos</span><span class="font-semibold text-slate-700">No registrados</span></div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 text-base mb-3 flex items-center">
+                        <i data-lucide="clock" class="w-4 h-4 text-blue-600 mr-2"></i> Controles preventivos
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                        <div class="bg-slate-50 p-3 rounded-xl"><span class="text-slate-400 block">Última consulta</span><span class="font-semibold text-slate-700">10/10/2026</span></div>
+                        <div class="bg-slate-50 p-3 rounded-xl"><span class="text-slate-400 block">Próxima revisión</span><span class="font-semibold text-slate-700">Por programar</span></div>
+                        <div class="bg-slate-50 p-3 rounded-xl"><span class="text-slate-400 block">Estado</span><span class="font-semibold text-sky-600">Seguimiento recomendado</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 11. AGENDAR CITA -->
+        <section id="view-book-appointment" class="view-section max-w-lg mx-auto w-full">
+            <div class="bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
+                <div class="mb-6 text-center">
+                    <span class="text-xs font-bold uppercase tracking-wider text-sky-600">Salud Preventiva</span>
+                    <h2 class="text-2xl font-bold text-slate-800 mt-1">Agenda tu cita médica</h2>
+                    <p class="text-slate-500 text-xs mt-1">Selecciona el tipo de consulta y el horario que mejor se adapte a ti.</p>
+                </div>
+
+                <form onsubmit="event.preventDefault(); navigateTo('view-appointment-confirm');" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tipo de consulta</label>
+                        <select required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 outline-none bg-white">
+                            <option value="">Selecciona una consulta</option>
+                            <option value="general">Consulta general</option>
+                            <option value="preventivo">Control preventivo</option>
+                            <option value="teleconsulta">Teleconsulta virtual</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Fecha de la consulta</label>
+                        <input type="date" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Hora de cita</label>
+                        <select required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 outline-none bg-white">
+                            <option value="">Selecciona una hora</option>
+                            <option value="09:00">09:00 a.m.</option>
+                            <option value="10:30">10:30 a.m.</option>
+                            <option value="14:00">02:00 p.m.</option>
+                        </select>
+                    </div>
+
+                    <div class="p-3 bg-sky-50 rounded-xl text-xs text-sky-800 flex items-start space-x-2">
+                        <i data-lucide="info" class="w-4 h-4 text-sky-600 flex-shrink-0 mt-0.5"></i>
+                        <span>Recuerda verificar la fecha y la hora antes de confirmar tu cita.</span>
+                    </div>
+
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-200 text-sm">
+                        Confirmar cita
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- 12. CONFIRMACIÓN DE CITA -->
+        <section id="view-appointment-confirm" class="view-section max-w-md mx-auto w-full text-center">
+            <div class="bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
+                <div class="w-16 h-16 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="calendar-check" class="w-8 h-8"></i>
+                </div>
+                <span class="text-xs font-bold uppercase tracking-wider text-sky-600">Salud Preventiva</span>
+                <h2 class="text-2xl font-bold text-slate-800 mt-1">¡Cita confirmada!</h2>
+                <p class="text-slate-500 text-xs mt-1">Tu solicitud de cita médica ha sido registrada correctamente.</p>
+
+                <div class="bg-slate-50 rounded-2xl p-4 my-6 text-left space-y-2 text-xs">
+                    <span class="font-bold text-slate-700 block text-sm border-b border-slate-200 pb-1 mb-2">Detalles de la cita</span>
+                    <div class="flex justify-between"><span class="text-slate-400">Fecha:</span><span class="font-semibold text-slate-700">15 de noviembre de 2026</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400">Hora:</span><span class="font-semibold text-slate-700">9:00 a.m.</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400">Tipo:</span><span class="font-semibold text-slate-700">Consulta general</span></div>
+                </div>
+
+                <p class="text-xs text-amber-600 font-medium mb-6">Recuerda asistir puntualmente a la cita.</p>
+
+                <button onclick="navigateToDashboard()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-200 text-sm">
+                    Volver al panel de control
+                </button>
+            </div>
+        </section>
+
+        <!-- 13. PERFIL DEL PACIENTE -->
+        <section id="view-patient-profile" class="view-section max-w-lg mx-auto w-full">
+            <div class="bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-sky-600">Salud Preventiva</span>
+                        <h2 class="text-2xl font-bold text-slate-800 mt-1">Perfil del paciente</h2>
+                    </div>
+                    <button onclick="alert('Editar datos de perfil')" class="text-sky-600 font-bold text-xs hover:underline flex items-center">
+                        <i data-lucide="edit-3" class="w-3.5 h-3.5 mr-1"></i> Editar perfil
+                    </button>
+                </div>
+
+                <div class="flex items-center space-x-4 mb-6 p-4 bg-sky-50 rounded-2xl">
+                    <div class="w-14 h-14 bg-sky-500 text-white font-extrabold rounded-2xl flex items-center justify-center text-xl shadow-md">
+                        ML
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg">María López</h3>
+                        <span class="px-2.5 py-0.5 bg-sky-200 text-sky-800 text-[10px] font-bold uppercase rounded-full">Paciente</span>
+                    </div>
+                </div>
+
+                <div class="space-y-4 text-xs">
+                    <span class="font-bold text-slate-400 uppercase tracking-wider block border-b border-slate-100 pb-1">Información personal</span>
+                    
+                    <div class="flex justify-between py-1">
+                        <span class="text-slate-500">Nombre completo:</span>
+                        <span class="font-semibold text-slate-800">María López</span>
+                    </div>
+                    <div class="flex justify-between py-1">
+                        <span class="text-slate-500">Correo electrónico:</span>
+                        <span class="font-semibold text-slate-800">maria@ejemplo.com</span>
+                    </div>
+                    <div class="flex justify-between py-1">
+                        <span class="text-slate-500">Teléfono:</span>
+                        <span class="font-semibold text-slate-800">300 567 1111</span>
+                    </div>
+                    <div class="flex justify-between py-1">
+                        <span class="text-slate-500">Documento de identidad:</span>
+                        <span class="font-semibold text-slate-800">1000000000</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 14. NOTIFICACIONES -->
+        <section id="view-notifications" class="view-section max-w-2xl mx-auto w-full">
+            <div class="mb-6">
+                <span class="text-xs font-bold uppercase tracking-wider text-sky-600">Salud Preventiva</span>
+                <h2 class="text-2xl font-bold text-slate-800 mt-1">Tus notificaciones</h2>
+                <p class="text-slate-500 text-sm">Mantente al día con tus servicios de salud.</p>
+            </div>
+
+            <div class="space-y-3">
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-start space-x-3">
+                    <div class="p-2 bg-sky-100 text-sky-600 rounded-xl mt-0.5">
+                        <i data-lucide="bell" class="w-4 h-4"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <h4 class="font-bold text-slate-800 text-sm">Recordatorio de cita</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">Tienes una cita médica programada para mañana.</p>
+                        <span class="text-[10px] text-slate-400 mt-1 block">Hace 1 hora</span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-start space-x-3">
+                    <div class="p-2 bg-emerald-100 text-emerald-600 rounded-xl mt-0.5">
+                        <i data-lucide="file-check" class="w-4 h-4"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <h4 class="font-bold text-slate-800 text-sm">Resultado disponible</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">Ya puedes consultar los resultados de laboratorio.</p>
+                        <span class="text-[10px] text-slate-400 mt-1 block">Ayer</span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-start space-x-3">
+                    <div class="p-2 bg-purple-100 text-purple-600 rounded-xl mt-0.5">
+                        <i data-lucide="heart-pulse" class="w-4 h-4"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <h4 class="font-bold text-slate-800 text-sm">Control preventivo</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">Recuerda mantener al día tus controles de salud.</p>
+                        <span class="text-[10px] text-slate-400 mt-1 block">Hace 3 días</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 15. CONFIGURACIÓN -->
+        <section id="view-settings" class="view-section max-w-2xl mx-auto w-full">
+            <div class="mb-6">
+                <span class="text-xs font-bold uppercase tracking-wider text-sky-600">Salud Preventiva</span>
+                <h2 class="text-2xl font-bold text-slate-800 mt-1">Configuración de la cuenta</h2>
+                <p class="text-slate-500 text-sm">Personaliza tus preferencias.</p>
+            </div>
+
+            <div class="bg-white rounded-3xl shadow-md border border-slate-100 overflow-hidden divide-y divide-slate-100 text-sm">
+                <div class="p-4 sm:p-5 flex items-center justify-between hover:bg-slate-50 cursor-pointer">
+                    <div class="flex items-center space-x-3">
+                        <i data-lucide="user" class="w-5 h-5 text-slate-400"></i>
+                        <div>
+                            <h4 class="font-bold text-slate-800">Datos Personales</h4>
+                            <p class="text-xs text-slate-400">Actualiza tu información</p>
+                        </div>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                </div>
+
+                <div class="p-4 sm:p-5 flex items-center justify-between hover:bg-slate-50 cursor-pointer">
+                    <div class="flex items-center space-x-3">
+                        <i data-lucide="bell" class="w-5 h-5 text-slate-400"></i>
+                        <div>
+                            <h4 class="font-bold text-slate-800">Notificaciones</h4>
+                            <p class="text-xs text-slate-400">Configura tus recordatorios</p>
+                        </div>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                </div>
+
+                <div class="p-4 sm:p-5 flex items-center justify-between hover:bg-slate-50 cursor-pointer">
+                    <div class="flex items-center space-x-3">
+                        <i data-lucide="lock" class="w-5 h-5 text-slate-400"></i>
+                        <div>
+                            <h4 class="font-bold text-slate-800">Privacidad y seguridad</h4>
+                            <p class="text-xs text-slate-400">Protege tu información</p>
+                        </div>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                </div>
+
+                <div class="p-4 sm:p-5 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <i data-lucide="globe" class="w-5 h-5 text-slate-400"></i>
+                        <h4 class="font-bold text-slate-800">Idioma</h4>
+                    </div>
+                    <span class="text-xs font-semibold text-sky-600 bg-sky-50 px-3 py-1 rounded-full border border-sky-100">Español</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 16. CENTRO DE AYUDA -->
+        <section id="view-help" class="view-section max-w-2xl mx-auto w-full">
+            <div class="mb-6 text-center">
+                <span class="text-xs font-bold uppercase tracking-wider text-sky-600">Salud Preventiva</span>
+                <h2 class="text-2xl font-bold text-slate-800 mt-1">¿Cómo podemos ayudarte?</h2>
+                <p class="text-slate-500 text-sm">Encuentra respuestas a tus preguntas.</p>
+            </div>
+
+            <div class="relative mb-6">
+                <input type="text" placeholder="Buscar una pregunta..." class="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 outline-none bg-white shadow-sm">
+                <i data-lucide="search" class="w-5 h-5 text-slate-400 absolute left-3.5 top-3.5"></i>
+            </div>
+
+            <div class="space-y-3 mb-8">
+                <details class="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm group">
+                    <summary class="font-bold text-slate-800 text-sm cursor-pointer list-none flex justify-between items-center">
+                        <span>¿Cómo agendar una cita?</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition"></i>
+                    </summary>
+                    <p class="text-xs text-slate-500 mt-2 pt-2 border-t border-slate-50">
+                        Ve al panel de control y haz clic en "Agendar cita". Selecciona el tipo de consulta, la fecha y la hora deseada.
+                    </p>
+                </details>
+
+                <details class="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm group">
+                    <summary class="font-bold text-slate-800 text-sm cursor-pointer list-none flex justify-between items-center">
+                        <span>¿Cómo ingreso a una teleconsulta?</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition"></i>
+                    </summary>
+                    <p class="text-xs text-slate-500 mt-2 pt-2 border-t border-slate-50">
+                        Haz clic en el módulo "Teleconsulta" a la hora agendada y presiona "Iniciar consulta".
+                    </p>
+                </details>
+
+                <details class="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm group">
+                    <summary class="font-bold text-slate-800 text-sm cursor-pointer list-none flex justify-between items-center">
+                        <span>¿Dónde veo mis resultados médicos?</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition"></i>
+                    </summary>
+                    <p class="text-xs text-slate-500 mt-2 pt-2 border-t border-slate-50">
+                        En la sección "Resultados" podrás descargar tus exámenes en formato PDF.
+                    </p>
+                </details>
+
+                <details class="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm group">
+                    <summary class="font-bold text-slate-800 text-sm cursor-pointer list-none flex justify-between items-center">
+                        <span>¿Cómo protegen mis datos?</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-open:rotate-180 transition"></i>
+                    </summary>
+                    <p class="text-xs text-slate-500 mt-2 pt-2 border-t border-slate-50">
+                        Toda tu información médica está encriptada bajo los más altos estándares de privacidad médica.
+                    </p>
+                </details>
+            </div>
+
+            <div class="bg-sky-50 rounded-2xl p-6 text-center border border-sky-100">
+                <h4 class="font-bold text-sky-900 text-sm">¿Necesitas más ayuda?</h4>
+                <button onclick="alert('Conectando con soporte técnico...')" class="mt-3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md text-xs">
+                    Contactar soporte
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-400 mt-auto">
+        <p>© 2026 Salud Preventiva - Todos los derechos reservados</p>
+    </footer>
+
+    <!-- Lógica JavaScript principal -->
+    <script src="script.js"></script>
+</body>
+</html>

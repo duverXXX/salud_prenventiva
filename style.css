@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Estilo SVG / Gráfico idéntico a la imagen provista para la pantalla de inicio de sesión */
+.login-bg-container {
+    background-color: #f8fafc;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Forma superior izquierda */
+.shape-top-left {
+    position: absolute;
+    top: -20px;
+    left: -30px;
+    width: 320px;
+    height: 180px;
+    background: #78909c;
+    border-radius: 0 0 100px 120px;
+    opacity: 0.85;
+    z-index: 1;
+}
+
+/* Forma inferior derecha */
+.shape-bottom-right {
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    width: 350px;
+    height: 200px;
+    background: #90a4ae;
+    border-radius: 120px 0 0 0;
+    opacity: 0.85;
+    z-index: 1;
+}
+
+/* Cruces médicas decorativas */
+.cross-deco {
+    color: #90a4ae;
+    position: absolute;
+    z-index: 2;
+}
+
+.view-section {
+    display: none;
+}
+
+.view-section.active {
+    display: block;
+}
+
+/* Tarjetas de selección de rol en login */
+.role-select-card {
+    border: 1.5px solid #e2e8f0;
+    background-color: #f8fafc;
+}
+.role-select-card.active {
+    border-color: #0284c7;
+    background-color: #f0f9ff;
+}
